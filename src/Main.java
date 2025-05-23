@@ -1,3 +1,4 @@
+import manager.InMemoryTaskManager;
 import manager.TaskManager;
 import model.Epic;
 import model.Subtask;
@@ -7,7 +8,7 @@ import util.TaskStatus;
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = new InMemoryTaskManager();
 
         Task task1 = new Task("Task1", TaskStatus.NEW, "model.Task Description1");
         taskManager.createTask(task1);
@@ -29,26 +30,6 @@ public class Main {
                 epic2.getId());
         taskManager.createSubtask(subtask3);
 
-        System.out.println(taskManager.getAllTasks());
-        System.out.println(taskManager.getAllEpics());
-        System.out.println(taskManager.getAllSubtasks());
-        System.out.println();
 
-        subtask1.setStatus(TaskStatus.DONE);
-        subtask3.setStatus(TaskStatus.IN_PROGRESS);
-        taskManager.updateEpic(epic1);
-        taskManager.updateEpic(epic2);
-
-        System.out.println(taskManager.getAllEpics());
-        System.out.println(taskManager.getAllSubtasks());
-        System.out.println();
-
-        taskManager.deleteTask(task2.getId());
-        taskManager.deleteSubtask(subtask1.getId());
-        taskManager.deleteEpic(epic2.getId());
-
-        System.out.println(taskManager.getAllTasks());
-        System.out.println(taskManager.getAllEpics());
-        System.out.println(taskManager.getAllSubtasks());
     }
 }
