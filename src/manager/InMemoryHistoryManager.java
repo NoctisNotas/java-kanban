@@ -19,11 +19,23 @@ public class InMemoryHistoryManager implements HistoryManager {
             browsingHistory.removeFirst();
         }
 
-        browsingHistory.add(task);
+        // Создаем копию задачи перед добавлением в историю
+        Task taskCopy = copyTask(task);
+        browsingHistory.add(taskCopy);
     }
 
     @Override
     public List<Task> getHistory() {
         return new ArrayList<>(browsingHistory);
+    }
+
+    private Task copyTask(Task original) {
+        if (original == null) {
+            return null;
+        }
+
+        Task copy = new Task(original.getName(), original.getStatus(), original.getDescription());
+        copy.setId(original.getId());
+        return copy;
     }
 }

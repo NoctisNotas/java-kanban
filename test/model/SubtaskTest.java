@@ -26,5 +26,4 @@ class SubtaskTest {
 
         assertNotEquals(subtask1, subtask2, "Subtasks with the different ID should not be equal");
     }
-
 }

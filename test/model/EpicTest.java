@@ -30,5 +30,4 @@ class EpicTest {
 
         assertNotEquals(epic1, epic2, "Tasks with the different ID should not be equal");
     }
-
 }

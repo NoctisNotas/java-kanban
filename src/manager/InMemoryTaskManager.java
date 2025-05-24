@@ -46,7 +46,23 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task createTask(Task task) {
-        task.setId(nextId++);
+        if (task == null) {
+            throw new IllegalArgumentException("Task cannot be null");
+        }
+
+        if (task.getId() != 0) {
+            // Проверяем, не занят ли этот ID
+            if (tasks.containsKey(task.getId())){
+                throw new IllegalArgumentException("Task ID " + task.getId() + " already exists");
+            }
+
+            if (task.getId() >= nextId) {
+                nextId = task.getId() + 1;
+            }
+        } else {
+            task.setId(nextId++);
+        }
+
         tasks.put(task.getId(), task);
         return task;
     }
@@ -172,13 +188,23 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask createSubtask(Subtask subtask) {
+        if (subtask == null) {
+            throw new IllegalArgumentException("Subtask cannot be null");
+        }
+
+        if (subtask.getId() == subtask.getEpicId()) {
+            throw new IllegalArgumentException("Subtask cannot be its own epic");
+        }
+
         subtask.setId(nextId++);
         subtasks.put(subtask.getId(), subtask);
+
         Epic epic = epics.get(subtask.getEpicId());
         if (epic != null) {
             epic.addSubtaskId(subtask.getId());
             updateEpicStatus(epic.getId());
         }
+
         return subtask;
     }
 
