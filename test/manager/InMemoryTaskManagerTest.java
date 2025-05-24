@@ -87,7 +87,7 @@ class InMemoryTaskManagerTest {
     @Test
     void updateNonExistentTaskShouldNotAffectManager() {
         Task task = new Task("Task", TaskStatus.NEW, "Description");
-        task.setId(555); // Несуществующий ID
+        task.setId(555);
 
         taskManager.updateTask(task);
         assertNull(taskManager.getTask(55));
@@ -102,7 +102,7 @@ class InMemoryTaskManagerTest {
         taskManager.createEpic(epic);
         taskManager.deleteAllTasks();
 
-        assertTrue(taskManager.getAllTasks().isEmpty(), "Все задачи должны быть удалены");
-        assertFalse(taskManager.getAllEpics().isEmpty(), "Эпики должны остаться");
+        assertTrue(taskManager.getAllTasks().isEmpty());
+        assertFalse(taskManager.getAllEpics().isEmpty());
     }
 }
