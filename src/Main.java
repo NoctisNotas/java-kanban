@@ -4,12 +4,13 @@ import manager.TaskManager;
 import model.Epic;
 import model.Subtask;
 import model.Task;
+import util.Managers;
 import util.TaskStatus;
 
 public class Main {
 
     public static void main(String[] args) {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        TaskManager taskManager = Managers.getDefault();
 
         Task task1 = new Task("Task1", TaskStatus.NEW, "model.Task Description1");
         taskManager.createTask(task1);
