@@ -22,7 +22,7 @@ public class InMemoryTaskManager implements TaskManager {
         return browsingHistory.getHistory();
     }
 
-    //методы для класса Task
+    //Task
     @Override
     public ArrayList<Task> getAllTasks() {
         return new ArrayList<>(tasks.values());
@@ -35,6 +35,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTask(int id) {
+        browsingHistory.remove(id);
         tasks.remove(id);
     }
 
@@ -74,7 +75,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    //методы для класса Epic
+    //Epic
     @Override
     public ArrayList<Epic> getAllEpics() {
         return new ArrayList<>(epics.values());
@@ -88,9 +89,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteEpic(int id) {
+        browsingHistory.remove(id);
         Epic epic = epics.remove(id);
         if (epic != null) {
             for (int subtaskId : epic.getSubtaskId()) {
+                browsingHistory.remove(subtaskId);
                 subtasks.remove(subtaskId);
             }
         }
@@ -165,7 +168,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    //методы для класса Subtask
+    //Subtask
     @Override
     public ArrayList<Subtask> getAllSubtasks() {
         return new ArrayList<>(subtasks.values());
@@ -218,6 +221,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteSubtask(int id) {
+        browsingHistory.remove(id);
         Subtask subtask = subtasks.remove(id);
         if (subtask != null) {
             Epic epic = epics.get(subtask.getEpicId());
