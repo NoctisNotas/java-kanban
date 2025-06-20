@@ -1,9 +1,8 @@
 package model;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
-import util.TaskStatus;
+import static org.junit.jupiter.api.Assertions.*;
 
 class EpicTest {
     @Test

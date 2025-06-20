@@ -53,7 +53,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         if (task.getId() != 0) {
             // Проверяем, не занят ли этот ID
-            if (tasks.containsKey(task.getId())){
+            if (tasks.containsKey(task.getId())) {
                 throw new IllegalArgumentException("Task ID " + task.getId() + " already exists");
             }
 
