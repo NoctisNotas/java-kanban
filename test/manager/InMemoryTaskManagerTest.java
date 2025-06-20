@@ -10,8 +10,6 @@ import model.Task;
 import util.Managers;
 import util.TaskStatus;
 
-import java.util.List;
-
 class InMemoryTaskManagerTest {
 
     private static TaskManager taskManager;
@@ -104,5 +102,49 @@ class InMemoryTaskManagerTest {
 
         assertTrue(taskManager.getAllTasks().isEmpty());
         assertFalse(taskManager.getAllEpics().isEmpty());
+    }
+
+    @Test
+    void shouldReturnEmptyListForNonExistentEpicSubtasks() {
+        assertTrue(taskManager.getEpicSubtasks(37).isEmpty());
+    }
+
+    @Test
+    void shouldRemoveSubtaskFromEpicWhenDeleted() {
+        taskManager = Managers.getDefault();
+        Task task = new Task("Task", TaskStatus.NEW, "Description");
+        task = taskManager.createTask(task);
+
+        Epic epic = new Epic("Epic", "Description");
+        epic = taskManager.createEpic(epic);
+
+        Subtask subtask = new Subtask("Subtask", TaskStatus.NEW, "Description", epic.getId());
+        subtask = taskManager.createSubtask(subtask);
+
+        taskManager.deleteSubtask(subtask.getId());
+        assertFalse(epic.getSubtaskId().contains(subtask.getId()));
+        assertTrue(taskManager.getEpicSubtasks(epic.getId()).isEmpty());
+    }
+
+    @Test
+    void shouldClearAllSubtasksWhenEpicDeleted() {
+        Epic epic = new Epic("Epic", "Description");
+        epic = taskManager.createEpic(epic);
+
+        Subtask subtask = new Subtask("Subtask", TaskStatus.NEW, "Description", epic.getId());
+        subtask = taskManager.createSubtask(subtask);
+        taskManager.deleteEpic(epic.getId());
+        assertNull(taskManager.getSubtask(subtask.getId()));
+    }
+
+    @Test
+    void shouldHandleTaskFieldChangesCorrectly() {
+        Task task = taskManager.createTask(new Task("Task", TaskStatus.NEW, "Desc"));
+
+        task.setName("Changed");
+        task.setStatus(TaskStatus.DONE);
+        Task fromManager = taskManager.getTask(task.getId());
+        assertEquals("Changed", fromManager.getName());
+        assertEquals(TaskStatus.DONE, fromManager.getStatus());
     }
 }
