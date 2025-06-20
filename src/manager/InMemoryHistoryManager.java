@@ -29,8 +29,11 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-        removeNode(history.get(id));
-        history.remove(id);
+        Node node = history.get(id);
+        if (node != null) {
+            removeNode(node);
+            history.remove(id);
+        }
     }
 
     private List<Task> getTasks() {
@@ -38,8 +41,8 @@ public class InMemoryHistoryManager implements HistoryManager {
         Node currentNode = first;
 
         while (currentNode != null) {
-            tasks.add(currentNode.value);
-            currentNode = currentNode.next;
+            tasks.add(currentNode.getValue());
+            currentNode = currentNode.getNext();
         }
 
         return tasks;
@@ -54,7 +57,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (oldLast == null) {
             first = newLast;
         } else {
-            oldLast.next = newLast;
+            oldLast.setNext(newLast);
         }
     }
 
@@ -62,22 +65,25 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (node == null) {
             return;
         }
-        node.value = null;
 
-        if (node.prev == null && node.next == null) {
+        Node prev = node.getPrev();
+        Node next = node.getNext();
+
+        if (prev == null && next == null) {
             first = null;
             last = null;
-        } else if (node.prev == null) {
-            first = node.next;
-            first.prev = null;
-        } else if (node.next == null) {
-            last = node.prev;
-            last.next = null;
+        } else if (prev == null) {
+            first = next;
+            first.setPrev(null);
+        } else if (next == null) {
+            last = prev;
+            last.setNext(null);
         } else {
-            node.prev.next = node.next;
-            node.next.prev = node.prev;
+            prev.setNext(next);
+            next.setPrev(prev);
         }
 
+        node.clearNode();
     }
 
     private Task copyTask(Task original) {
@@ -90,16 +96,45 @@ public class InMemoryHistoryManager implements HistoryManager {
         return copy;
     }
 
-    private static class Node {
-        public Node prev;
-        public Task value;
-        public Node next;
-
+    private static final class Node {
+        private Node prev;
+        private Task value;
+        private Node next;
 
         public Node(Node prev, Task value, Node next) {
             this.prev = prev;
             this.value = value;
             this.next = next;
+        }
+
+        public Node getPrev() {
+            return prev;
+        }
+
+        public void setPrev(Node prev) {
+            this.prev = prev;
+        }
+
+        public Task getValue() {
+            return value;
+        }
+
+        public void setValue(Task value) {
+            this.value = value;
+        }
+
+        public Node getNext() {
+            return next;
+        }
+
+        public void setNext(Node next) {
+            this.next = next;
+        }
+
+        public void clearNode() {
+            this.prev = null;
+            this.value = null;
+            this.next = null;
         }
     }
 }
