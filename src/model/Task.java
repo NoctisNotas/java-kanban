@@ -3,6 +3,7 @@ package model;
 import java.util.Objects;
 
 import util.TaskStatus;
+import util.TaskType;
 
 public class Task {
     private int id;
@@ -46,6 +47,10 @@ public class Task {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    public TaskType getType() {
+        return TaskType.TASK;
     }
 
     @Override
