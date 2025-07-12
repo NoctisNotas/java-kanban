@@ -39,6 +39,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                             case SUBTASK:
                                 manager.createSubtask((Subtask) task);
                                 break;
+                            default:
+                                throw new ManagerSaveException("Неизвестный тип задачи");
                         }
                     }
                 }
