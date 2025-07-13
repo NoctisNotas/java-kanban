@@ -4,12 +4,11 @@ import model.Epic;
 import model.Subtask;
 import model.Task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskManager {
-    //методы для класса Task
-    ArrayList<Task> getAllTasks();
+
+    List<Task> getAllTasks();
 
     void deleteAllTasks();
 
@@ -21,8 +20,7 @@ public interface TaskManager {
 
     void updateTask(Task task);
 
-    //методы для класса Epic
-    ArrayList<Epic> getAllEpics();
+    List<Epic> getAllEpics();
 
     void deleteAllEpics();
 
@@ -34,10 +32,9 @@ public interface TaskManager {
 
     void updateEpic(Epic epic);
 
-    ArrayList<Subtask> getEpicSubtasks(int epicId);
+    List<Subtask> getEpicSubtasks(int epicId);
 
-    //методы для класса Subtask
-    ArrayList<Subtask> getAllSubtasks();
+    List<Subtask> getAllSubtasks();
 
     void deleteAllSubtasks();
 
@@ -50,4 +47,8 @@ public interface TaskManager {
     void deleteSubtask(int id);
 
     List<Task> getHistory();
+
+    List<Task> getPrioritizedTasks();
+
+    boolean hasTimeOverlap(Task task);
 }

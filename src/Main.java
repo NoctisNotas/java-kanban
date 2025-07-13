@@ -5,69 +5,46 @@ import model.Task;
 import util.Managers;
 import util.TaskStatus;
 
-public class Main {
+import java.time.Duration;
+import java.time.LocalDateTime;
 
+public class Main {
     public static void main(String[] args) {
         TaskManager taskManager = Managers.getDefault();
 
-        Task task1 = new Task("Task1", TaskStatus.NEW, "model.Task Description1");
+        // Создание задач с временными параметрами
+        Task task1 = new Task("Task1", TaskStatus.NEW, "Description1",
+                LocalDateTime.of(2023, 1, 1, 10, 0), Duration.ofMinutes(30));
         taskManager.createTask(task1);
-        Task task2 = new Task("Task2", TaskStatus.IN_PROGRESS, "model.Task Description2");
+
+        Task task2 = new Task("Task2", TaskStatus.IN_PROGRESS, "Description2",
+                LocalDateTime.of(2023, 1, 1, 11, 0), Duration.ofMinutes(45));
         taskManager.createTask(task2);
 
-        Epic epic1 = new Epic("Epic1", "model.Epic Description1");
+        // Эпик с подзадачами
+        Epic epic1 = new Epic("Epic1", "Epic Description");
         taskManager.createEpic(epic1);
-        Subtask subtask1 = new Subtask("Subtask1.1", TaskStatus.NEW, "SubTask Description1.1",
-                epic1.getId());
+
+        Subtask subtask1 = new Subtask("Subtask1", TaskStatus.NEW, "SubDesc1",
+                epic1.getId(), LocalDateTime.of(2023, 1, 2, 9, 0), Duration.ofHours(1));
         taskManager.createSubtask(subtask1);
-        Subtask subtask2 = new Subtask("Subtask1.2", TaskStatus.DONE, "SubTask Description1.2",
-                epic1.getId());
+
+        Subtask subtask2 = new Subtask("Subtask2", TaskStatus.DONE, "SubDesc2",
+                epic1.getId(), LocalDateTime.of(2023, 1, 2, 11, 0), Duration.ofMinutes(90));
         taskManager.createSubtask(subtask2);
 
-        Epic epic2 = new Epic("Epic2", "model.Epic Description2");
-        taskManager.createEpic(epic2);
-        Subtask subtask3 = new Subtask("Subtask2.1", TaskStatus.DONE, "SubTask Description2.1",
-                epic2.getId());
-        taskManager.createSubtask(subtask3);
+        // Тестирование новых методов
+        System.out.println("Prioritized tasks:");
+        taskManager.getPrioritizedTasks().forEach(System.out::println);
 
-        taskManager.getTask(task1.getId());
-        taskManager.getTask(task2.getId());
-        taskManager.getEpic(epic1.getId());
-        taskManager.getEpic(epic2.getId());
-        taskManager.getSubtask(subtask1.getId());
-        taskManager.getSubtask(subtask2.getId());
-        taskManager.getSubtask(subtask3.getId());
-        taskManager.getTask(task1.getId());
-        taskManager.getTask(task2.getId());
-        taskManager.getEpic(epic1.getId());
-        taskManager.getEpic(epic2.getId());
+        System.out.println("\nEpic time calculation:");
+        System.out.println("Start: " + epic1.getStartTime());
+        System.out.println("Duration: " + epic1.getDuration());
+        System.out.println("End: " + epic1.getEndTime());
 
-        printAllTasks(taskManager);
-    }
-
-    private static void printAllTasks(TaskManager manager) {
-        System.out.println("Задачи:");
-        for (Task task : manager.getAllTasks()) {
-            System.out.println(task);
-        }
-
-        System.out.println("Эпики:");
-        for (Task epic : manager.getAllEpics()) {
-            System.out.println(epic);
-
-            for (Task task : manager.getEpicSubtasks(epic.getId())) {
-                System.out.println("--> " + task);
-            }
-        }
-
-        System.out.println("Подзадачи:");
-        for (Task subtask : manager.getAllSubtasks()) {
-            System.out.println(subtask);
-        }
-
-        System.out.println("История:");
-        for (Task task : manager.getHistory()) {
-            System.out.println(task);
-        }
+        // Проверка пересечений
+        Task overlappingTask = new Task("Overlap", TaskStatus.NEW, "Desc",
+                LocalDateTime.of(2023, 1, 1, 10, 15), Duration.ofMinutes(10));
+        System.out.println("\nHas overlap: " + taskManager.hasTimeOverlap(overlappingTask));
     }
 }
