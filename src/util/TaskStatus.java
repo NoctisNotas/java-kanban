@@ -3,5 +3,9 @@ package util;
 public enum TaskStatus {
     NEW,
     IN_PROGRESS,
-    DONE
+    DONE;
+
+    public boolean isInProgress() {
+        return this == IN_PROGRESS;
+    }
 }

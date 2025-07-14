@@ -1,13 +1,16 @@
 package model;
 
-import java.util.Objects;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import util.TaskStatus;
 import util.TaskType;
 
 public class Epic extends Task {
     private ArrayList<Integer> subtasksId;
+    private LocalDateTime endTime;
 
     public Epic(String name, String description) {
         super(name, TaskStatus.NEW, description);
@@ -27,6 +30,57 @@ public class Epic extends Task {
     }
 
     @Override
+    public Duration getDuration() {
+        if (subtasksId.isEmpty()) {
+            return Duration.ZERO;
+        }
+
+        long totalMinutes = subtasksId.stream()
+                .mapToLong(id -> {
+                    Subtask subtask = (Subtask) getTaskById(id);
+                    return subtask != null && subtask.getDuration() != null ?
+                            subtask.getDuration().toMinutes() : 0;
+                })
+                .sum();
+
+        return Duration.ofMinutes(totalMinutes);
+    }
+
+    @Override
+    public LocalDateTime getStartTime() {
+        if (subtasksId.isEmpty()) {
+            return null;
+        }
+
+        return subtasksId.stream()
+                .map(this::getTaskById)
+                .filter(Objects::nonNull)
+                .map(Task::getStartTime)
+                .filter(Objects::nonNull)
+                .min(LocalDateTime::compareTo)
+                .orElse(null);
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        if (subtasksId.isEmpty()) {
+            return null;
+        }
+
+        return subtasksId.stream()
+                .map(this::getTaskById)
+                .filter(Objects::nonNull)
+                .map(Task::getEndTime)
+                .filter(Objects::nonNull)
+                .max(LocalDateTime::compareTo)
+                .orElse(null);
+    }
+
+    private Task getTaskById(int id) {
+        return null;
+    }
+
+    @Override
     public TaskType getType() {
         return TaskType.EPIC;
     }
@@ -41,7 +95,11 @@ public class Epic extends Task {
             result += ", description.length=" + super.getDescription().length();
         }
 
-        return result += ", id=" + super.getId() + ", status=" + super.getStatus() + '}';
+        return result += ", id=" + super.getId() +
+                ", status=" + super.getStatus() +
+                ", startTime=" + getStartTime() +
+                ", duration=" + getDuration() +
+                ", endTime=" + getEndTime() + '}';
     }
 
     @Override
@@ -55,6 +113,6 @@ public class Epic extends Task {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), subtasksId);
+        return Objects.hash(super.hashCode(), subtasksId, endTime);
     }
 }
