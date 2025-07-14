@@ -21,24 +21,24 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     void shouldNotAllowTaskToOverlapWithExistingTasks() {
         Task task1 = new Task("Task 1", TaskStatus.NEW, "Desc",
                 LocalDateTime.of(2025, 1, 1, 10, 0), Duration.ofMinutes(30));
-        taskManager.createTask(task1);
+        getTaskManager().createTask(task1);
 
         Task overlappingTask = new Task("Task 2", TaskStatus.NEW, "Desc",
                 LocalDateTime.of(2025, 1, 1, 10, 15), Duration.ofMinutes(30));
 
-        assertThrows(IllegalStateException.class, () -> taskManager.createTask(overlappingTask));
+        assertThrows(IllegalStateException.class, () -> getTaskManager().createTask(overlappingTask));
     }
 
     @Test
     void shouldAllowNonOverlappingTasks() {
         Task task1 = new Task("Task 1", TaskStatus.NEW, "Desc",
                 LocalDateTime.of(2025, 1, 1, 10, 0), Duration.ofMinutes(30));
-        taskManager.createTask(task1);
+        getTaskManager().createTask(task1);
 
         Task nonOverlappingTask = new Task("Task 2", TaskStatus.NEW, "Desc",
                 LocalDateTime.of(2025, 1, 1, 11, 0), Duration.ofMinutes(30));
 
-        assertDoesNotThrow(() -> taskManager.createTask(nonOverlappingTask));
+        assertDoesNotThrow(() -> getTaskManager().createTask(nonOverlappingTask));
     }
 
     @Test
@@ -55,7 +55,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     @Test
     void shouldHandleEpicWithNoSubtasksTimeFields() {
         Epic epic = new Epic("Epic", "Description");
-        taskManager.createEpic(epic);
+        getTaskManager().createEpic(epic);
 
         assertNull(epic.getStartTime());
         assertEquals(Duration.ZERO, epic.getDuration());
@@ -65,7 +65,6 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     @Test
     void shouldHandleSubtaskWithoutEpic() {
         Subtask subtask = new Subtask("Subtask", TaskStatus.NEW, "Desc", 999);
-        assertThrows(IllegalArgumentException.class, () -> taskManager.createSubtask(subtask));
+        assertThrows(IllegalArgumentException.class, () -> getTaskManager().createSubtask(subtask));
     }
-
 }

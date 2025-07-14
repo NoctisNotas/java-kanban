@@ -48,7 +48,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     void shouldSaveAndLoadTasksWithTimeFields() {
         Task task = new Task("Task", TaskStatus.NEW, "Desc",
                 LocalDateTime.of(2023, 1, 1, 10, 0), Duration.ofMinutes(30));
-        taskManager.createTask(task);
+        getTaskManager().createTask(task);
 
         FileBackedTaskManager loaded = FileBackedTaskManager.loadFromFile(tempFile);
         Task loadedTask = loaded.getTask(task.getId());
@@ -61,11 +61,11 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     @Test
     void shouldSaveAndLoadEpicWithSubtasks() {
         Epic epic = new Epic("Epic", "Desc");
-        taskManager.createEpic(epic);
+        getTaskManager().createEpic(epic);
 
         Subtask subtask = new Subtask("Sub", TaskStatus.NEW, "Desc", epic.getId(),
                 LocalDateTime.now(), Duration.ofMinutes(30));
-        taskManager.createSubtask(subtask);
+        getTaskManager().createSubtask(subtask);
 
         FileBackedTaskManager loaded = FileBackedTaskManager.loadFromFile(tempFile);
         assertEquals(1, loaded.getEpicSubtasks(epic.getId()).size());

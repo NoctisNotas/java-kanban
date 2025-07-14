@@ -14,7 +14,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
-    protected T taskManager;
+    private T taskManager;
+
+    protected final T getTaskManager() {
+        return taskManager;
+    }
 
     protected abstract T createTaskManager();
 
