@@ -12,8 +12,9 @@ public class Subtask extends Task {
     @SerializedName("epicId")
     private int epicId;
 
-    // Пустой конструктор для Gson
-    public Subtask() {}
+    public Subtask() {
+    }
+
     public Subtask(String name, TaskStatus status, String description, int epicId) {
         super(name, status, description);
         this.epicId = epicId;
