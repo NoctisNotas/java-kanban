@@ -27,7 +27,8 @@ public class Task {
     @SerializedName("startTime")
     private LocalDateTime startTime;
 
-    public Task() {}
+    public Task() {
+    }
 
     public Task(String name, TaskStatus status, String description) {
         this.name = name;
