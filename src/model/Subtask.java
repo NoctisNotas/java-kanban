@@ -4,12 +4,16 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import com.google.gson.annotations.SerializedName;
 import util.TaskStatus;
 import util.TaskType;
 
 public class Subtask extends Task {
+    @SerializedName("epicId")
     private int epicId;
 
+    // Пустой конструктор для Gson
+    public Subtask() {}
     public Subtask(String name, TaskStatus status, String description, int epicId) {
         super(name, status, description);
         this.epicId = epicId;

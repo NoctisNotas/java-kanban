@@ -4,16 +4,30 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import com.google.gson.annotations.SerializedName;
 import util.TaskStatus;
 import util.TaskType;
 
 public class Task {
+    @SerializedName("id")
     private int id;
+
+    @SerializedName("name")
     private String name;
+
+    @SerializedName("description")
     private String description;
+
+    @SerializedName("status")
     private TaskStatus status;
+
+    @SerializedName("duration")
     private Duration duration;
+
+    @SerializedName("startTime")
     private LocalDateTime startTime;
+
+    public Task() {}
 
     public Task(String name, TaskStatus status, String description) {
         this.name = name;

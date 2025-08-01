@@ -1,5 +1,6 @@
 package manager;
 
+import exceptions.NotFoundException;
 import model.Epic;
 import model.Subtask;
 import model.Task;
@@ -68,20 +69,22 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteTask(int id) {
+    public void deleteTask(int id) throws NotFoundException {
         Task task = tasks.remove(id);
-        if (task != null) {
-            browsingHistory.remove(id);
-            removeFromPrioritizedTasks(task);
+        if (task == null) {
+            throw new NotFoundException("Task with id=" + id + " not found");
         }
+        browsingHistory.remove(id);
+        removeFromPrioritizedTasks(task);
     }
 
     @Override
-    public Task getTask(int id) {
+    public Task getTask(int id) throws NotFoundException {
         Task task = tasks.get(id);
-        if (task != null) {
-            browsingHistory.add(task);
+        if (task == null) {
+            throw new NotFoundException("Task with id=" + id + " not found");
         }
+        browsingHistory.add(task);
         return task;
     }
 
@@ -146,23 +149,25 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteEpic(int id) {
+    public void deleteEpic(int id) throws NotFoundException {
         Epic epic = epics.remove(id);
-        if (epic != null) {
-            browsingHistory.remove(id);
-            epic.getSubtaskId().forEach(subtaskId -> {
-                browsingHistory.remove(subtaskId);
-                removeFromPrioritizedTasks(subtasks.remove(subtaskId));
-            });
+        if (epic == null) {
+            throw new NotFoundException("Epic with id=" + id + " not found");
         }
+        browsingHistory.remove(id);
+        epic.getSubtaskId().forEach(subtaskId -> {
+            browsingHistory.remove(subtaskId);
+            removeFromPrioritizedTasks(subtasks.remove(subtaskId));
+        });
     }
 
     @Override
-    public Epic getEpic(int id) {
+    public Epic getEpic(int id) throws NotFoundException {
         Epic epic = epics.get(id);
-        if (epic != null) {
-            browsingHistory.add(epic);
+        if (epic == null) {
+            throw new NotFoundException("Epic with id=" + id + " not found");
         }
+        browsingHistory.add(epic);
         return epic;
     }
 
@@ -214,11 +219,12 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Subtask getSubtask(int id) {
+    public Subtask getSubtask(int id) throws NotFoundException {
         Subtask subtask = subtasks.get(id);
-        if (subtask != null) {
-            browsingHistory.add(subtask);
+        if (subtask == null) {
+            throw new NotFoundException("Subtask with id=" + id + " not found");
         }
+        browsingHistory.add(subtask);
         return subtask;
     }
 
@@ -269,16 +275,17 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteSubtask(int id) {
+    public void deleteSubtask(int id) throws NotFoundException {
         Subtask subtask = subtasks.remove(id);
-        if (subtask != null) {
-            browsingHistory.remove(id);
-            removeFromPrioritizedTasks(subtask);
-            Epic epic = epics.get(subtask.getEpicId());
-            if (epic != null) {
-                epic.removeSubtaskId(id);
-                updateEpicStatus(epic.getId());
-            }
+        if (subtask == null) {
+            throw new NotFoundException("Subtask with id=" + id + " not found");
+        }
+        browsingHistory.remove(id);
+        removeFromPrioritizedTasks(subtask);
+        Epic epic = epics.get(subtask.getEpicId());
+        if (epic != null) {
+            epic.removeSubtaskId(id);
+            updateEpicStatus(epic.getId());
         }
     }
 
