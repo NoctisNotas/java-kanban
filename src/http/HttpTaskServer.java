@@ -14,10 +14,17 @@ public class HttpTaskServer {
     private final HttpServer server;
     private final TaskManager taskManager;
 
-    public HttpTaskServer() throws IOException {
-        this.taskManager = Managers.getDefault();
+    public HttpTaskServer(TaskManager taskManager) throws IOException {
+        this.taskManager = taskManager;
         this.server = HttpServer.create(new InetSocketAddress(PORT), 0);
+        registerHandlers();
+    }
 
+    public HttpTaskServer() throws IOException {
+        this(Managers.getDefault());
+    }
+
+    private void registerHandlers() {
         server.createContext("/tasks", new TasksHandler(taskManager));
         server.createContext("/subtasks", new SubtasksHandler(taskManager));
         server.createContext("/epics", new EpicsHandler(taskManager));
