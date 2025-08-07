@@ -1,6 +1,7 @@
 package manager;
 
 import exceptions.ManagerSaveException;
+import exceptions.NotFoundException;
 import model.Epic;
 import model.Subtask;
 import model.Task;
@@ -146,7 +147,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void deleteTask(int id) {
+    public void deleteTask(int id) throws NotFoundException {
         super.deleteTask(id);
         save();
     }
@@ -171,7 +172,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void deleteEpic(int id) {
+    public void deleteEpic(int id) throws NotFoundException {
         super.deleteEpic(id);
         save();
     }
@@ -196,7 +197,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void deleteSubtask(int id) {
+    public void deleteSubtask(int id) throws NotFoundException {
         super.deleteSubtask(id);
         save();
     }

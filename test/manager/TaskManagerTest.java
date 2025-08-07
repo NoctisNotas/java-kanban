@@ -1,5 +1,6 @@
 package manager;
 
+import exceptions.NotFoundException;
 import model.Epic;
 import model.Subtask;
 import model.Task;
@@ -92,9 +93,12 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void shouldDeleteTaskById() {
         Task task = new Task("Test task", TaskStatus.NEW, "Description");
         taskManager.createTask(task);
+        int taskId = task.getId();
 
-        taskManager.deleteTask(task.getId());
-        assertNull(taskManager.getTask(task.getId()), "Задача должна быть удалена");
+        taskManager.deleteTask(taskId);
+
+        assertThrows(NotFoundException.class, () -> taskManager.getTask(taskId),
+                "Должно быть выброшено NotFoundException после удаления задачи");
     }
 
     @Test

@@ -5,12 +5,20 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import com.google.gson.annotations.SerializedName;
 import util.TaskStatus;
 import util.TaskType;
 
 public class Epic extends Task {
+    @SerializedName("subtasksId")
     private ArrayList<Integer> subtasksId;
+
+    @SerializedName("endTime")
     private LocalDateTime endTime;
+
+    public Epic() {
+        this.subtasksId = new ArrayList<>();
+    }
 
     public Epic(String name, String description) {
         super(name, TaskStatus.NEW, description);
